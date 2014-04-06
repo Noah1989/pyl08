@@ -1,10 +1,17 @@
-from pylibftdi import USB_PID_LIST, Device
+from pylibftdi import USB_PID_LIST, SerialDevice
+from ctypes import byref
 
 USB_PID_LIST.append(0x6015)
+BITMODE_CBUS = 0x20
 
-dev = Device(mode='b')
+dev = SerialDevice()
 
-# baudrate seems to be divided by 4 internally
 dev.baudrate = 46875
 
-dev.write('U');
+# programming voltage
+dev.rts = 1
+
+#reset (does not work yet...)
+dev.ftdi_fn.ftdi_set_bitmode(byref(dev.ctx), 0x00, BITMODE_CBUS)
+
+dev.close()
